@@ -6,7 +6,6 @@ defmodule Deribit do
   @public_get [
     "auth",
     "get_time",
-    "hello",
     "test",
     "get_announcements",
     "get_book_summary_by_currency",
