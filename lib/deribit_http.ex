@@ -3,12 +3,10 @@ defmodule DeribitHttp do
   Handles HTTP requests to the Deribit API
   """
 
-  @base_endpoint "https://www.deribit.com"
   @api_v2 "/api/v2"
-  #@endpoint "https://test.deribit.com/api/v1"
 
   def get_public(url, params \\ %{}) do
-    @base_endpoint <> @api_v2 <> "/public/" <> url
+    base_endpoint() <> @api_v2 <> "/public/" <> url
     |> add_url_params(params)
     |> HTTPoison.get()
     |> parse_response()
@@ -18,7 +16,7 @@ defmodule DeribitHttp do
     url = add_url_params(@api_v2 <> "/private/" <> url, params)
     headers = authorization_headers(url, "", client_id, client_secret)
 
-    @base_endpoint <> url
+    base_endpoint() <> url
     |> HTTPoison.get(headers)
     |> parse_response()
   end
@@ -41,4 +39,11 @@ defmodule DeribitHttp do
   defp parse_response({:ok, %HTTPoison.Response{status_code: 200, body: body}}), do: Jason.decode(body)
   defp parse_response({:ok, %HTTPoison.Response{status_code: status, body: body}}), do: {:error, {status, body}}
   defp parse_response({:error, %HTTPoison.Error{reason: reason}}), do: {:error, reason}
+
+  defp base_endpoint do
+    case Application.get_env(:deribit, :test) do
+      true -> "https://test.deribit.com"
+      _ -> "https://www.deribit.com"
+    end
+  end
 end

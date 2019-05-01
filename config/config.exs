@@ -4,7 +4,8 @@ use Mix.Config
 
 config :deribit,
   client_id: "",
-  client_secret: ""
+  client_secret: "",
+  test: true
 
 if File.exists?("config/key.secret.exs") do
   import_config "key.secret.exs"
