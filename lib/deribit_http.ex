@@ -37,7 +37,7 @@ defmodule DeribitHttp do
   defp add_url_params(url, params), do: url <> "?" <> URI.encode_query(params)
 
   defp parse_response({:ok, %HTTPoison.Response{status_code: 200, body: body}}), do: Jason.decode(body)
-  defp parse_response({:ok, %HTTPoison.Response{status_code: status, body: body}}), do: {:error, {status, body}}
+  defp parse_response({:ok, %HTTPoison.Response{status_code: status, body: body}}), do: {:error, {status, Jason.decode!(body)}}
   defp parse_response({:error, %HTTPoison.Error{reason: reason}}), do: {:error, reason}
 
   defp base_endpoint do

@@ -10,7 +10,7 @@ The package can be installed by adding `deribit` to your list of dependencies in
 ```elixir
 def deps do
   [
-    {:deribit, "~> 0.1.0"}
+    {:deribit, "~> 0.2.0"}
   ]
 end
 ```
@@ -45,7 +45,14 @@ iex(1)> Deribit.test
 iex(2)> Deribit.test %{expected_result: "exception"}
 {:error,
  {500,
-  "{\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"internal_server_error\",\"code\":11094},\"testnet\":true,\"usIn\":1556750145420412,\"usOut\":1556750145420515,\"usDiff\":103}"}}
+  %{
+    "error" => %{"code" => 11094, "message" => "internal_server_error"},
+    "jsonrpc" => "2.0",
+    "testnet" => true,
+    "usDiff" => 101,
+    "usIn" => 1556925879289043,
+    "usOut" => 1556925879289144
+  }}}
 ```
 
 Errors have the format `{:error, {status, body}}` or `{:error, reason}`.
@@ -58,9 +65,23 @@ For endpoints with private scope, you can provide the user credentials or use th
 iex(1)> Deribit.get_subaccounts
 {:error,
  {400,
-  "{\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"invalid_credentials\",\"code\":13004},\"testnet\":true,\"usIn\":1556750394788882,\"usOut\":1556750394788903,\"usDiff\":21}"}}
+  %{
+    "error" => %{"code" => 13004, "message" => "invalid_credentials"},
+    "jsonrpc" => "2.0",
+    "testnet" => true,
+    "usDiff" => 19,
+    "usIn" => 1556925904685704,
+    "usOut" => 1556925904685723
+  }}}
 iex(2)> Deribit.get_account_summary("client_id", "client_secret", %{currency: "btc"})
 {:error,
  {400,
-  "{\"jsonrpc\":\"2.0\",\"error\":{\"message\":\"invalid_credentials\",\"code\":13004},\"testnet\":true,\"usIn\":1556750454519123,\"usOut\":1556750454519148,\"usDiff\":25}"}}
+  %{
+    "error" => %{"code" => 13004, "message" => "invalid_credentials"},
+    "jsonrpc" => "2.0",
+    "testnet" => true,
+    "usDiff" => 24,
+    "usIn" => 1556925927518909,
+    "usOut" => 1556925927518933
+  }}}
 ```
