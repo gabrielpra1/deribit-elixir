@@ -26,8 +26,9 @@ defmodule DeribitHttp do
     nonce = :crypto.strong_rand_bytes(4) |> Base.encode16()
 
     text = "#{timestamp}\n#{nonce}\nGET\n#{url}\n#{body}\n"
-    signature = :crypto.hmac(:sha256, client_secret, text) |> Base.encode16()
-
+    # signature = :crypto.hmac(:sha256, client_secret, text) |> Base.encode16()
+    signature = :crypto.mac(:hmac, :sha256, client_secret, text) |> Base.encode16()
+    
     ["Authorization": "deri-hmac-sha256 id=#{client_id},ts=#{timestamp},nonce=#{nonce},sig=#{signature}"]
   end
 
