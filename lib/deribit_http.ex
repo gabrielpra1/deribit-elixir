@@ -26,10 +26,16 @@ defmodule DeribitHttp do
     nonce = :crypto.strong_rand_bytes(4) |> Base.encode16()
 
     text = "#{timestamp}\n#{nonce}\nGET\n#{url}\n#{body}\n"
-    # signature = :crypto.hmac(:sha256, client_secret, text) |> Base.encode16()
-    signature = :crypto.mac(:hmac, :sha256, client_secret, text) |> Base.encode16()
-    
+    signature = hmac(:sha256, client_secret, text) |> Base.encode16()
+
     ["Authorization": "deri-hmac-sha256 id=#{client_id},ts=#{timestamp},nonce=#{nonce},sig=#{signature}"]
+  end
+
+  # TODO: remove when we require OTP 22.1
+  if Code.ensure_loaded?(:crypto) and function_exported?(:crypto, :mac, 4) do
+    defp hmac(digest, key, data), do: :crypto.mac(:hmac, digest, key, data)
+  else
+    defp hmac(digest, key, data), do: :crypto.hmac(digest, key, data)
   end
 
   defp get_timestamp, do: DateTime.utc_now() |> DateTime.to_unix() |> Kernel.*(1000)
